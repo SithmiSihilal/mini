@@ -6,13 +6,15 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 18:17:15 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:22:52 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 14:52:03 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 t_cmdlist	*cmd_to_cmdlist(t_cmd *cmd);
+
+int	g_last_signal = -1;
 
 static t_token	*process_input(char *input, char ***parts_out, char **orig_out)
 {
@@ -50,11 +52,11 @@ static int	execute_cmd(t_core *core, t_cmd *first, char **my_env)
 	return (0);
 }
 
-static void	handle_tokens(t_core *core, t_token *tok, int *es, char **res)
+static void	handle_tokens(t_core *core, t_token *tok, char **res)
 {
 	t_cmd	*cmds;
 
-	expand_tokens(tok, core->my_env, *es);
+	expand_tokens(tok, core->my_env, core->exit_status);
 	cmds = commands_from_tokens(tok, NULL);
 	core->cmds = cmds;
 	token_clear(&tok);
@@ -62,12 +64,12 @@ static void	handle_tokens(t_core *core, t_token *tok, int *es, char **res)
 	// free_resources(res[0], (char **)res[1], res[2]);
 	if (cmds)
 	{
-		*es = execute_cmd(core, cmds, core->my_env);
+		core->exit_status = execute_cmd(core, cmds, core->my_env);
 		cmd_clear(&core->cmds);
 	}
 }
 
-static int	process_loop(t_core *core, int *exit_status)
+static int	process_loop(t_core *core)
 {
 	char	*input;
 	char	**parts;
@@ -75,15 +77,23 @@ static int	process_loop(t_core *core, int *exit_status)
 	t_token	*tokens;
 	char	*res[3];
 
+	parts = NULL;
+	original = NULL;
+	setup_signals();
 	input = readline("minishell> ");
+	if (g_last_signal == SIGINT)
+	{
+		g_last_signal = -1;
+		core->exit_status = 130;
+	}
 	if (!input || ft_strcmp(input, "exit") == 0)
 		return (free_resources(input, NULL, NULL), 0);
 	if (*input)
 		add_history(input);
 	tokens = process_input(input, &parts, &original);
-	free_resources(input, (char **)parts, original);
+	free_resources(input, parts, original);
 	if (tokens)
-		handle_tokens(core, tokens, exit_status, res);
+		handle_tokens(core, tokens, res);
 	return (1);
 }
 
@@ -91,12 +101,11 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_core	core;
 	char	**my_env;
-	int		exit_status;
 
+	g_last_signal = -1;
 	core = (t_core){0};
 	(void)argc;
 	(void)argv;
-	exit_status = 0;
 	if (!envp || !envp[0])
 		my_env = init_env();
 	else
@@ -106,7 +115,7 @@ int	main(int argc, char **argv, char **envp)
 	init_global_env(&core, my_env);
 	core.my_env = my_env;
 	setup_signals();
-	while (process_loop(&core, &exit_status))
+	while (process_loop(&core))
 		;
 	free_core(&core);
 	return (0);

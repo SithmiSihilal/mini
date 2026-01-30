@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 21:00:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:26:16 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:10:24 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void ft_free_matrix(int **mat)
 }
 
 
-static void	exec_pipe_cmd(t_core *core, t_pipe_ctx *ctx, int n_pipes)
+static void	exec_pipe_cmd(t_core *core, t_pipe_ctx *ctx)
 {
 	char	*path;
 	int		status;
@@ -53,24 +53,21 @@ static void	exec_pipe_cmd(t_core *core, t_pipe_ctx *ctx, int n_pipes)
 	setup_pipe_fds(ctx->cmd_i, ctx->n_cmds, ctx->pipes);
 	if (ctx->cmd->redirs && apply_redirections(ctx->cmd->redirs,
 			ctx->envp, core->exec_output) < 0)
-		return (close_pipes(ctx->pipes, n_pipes), free_core(core), exit(1));
+		return (free_core(core), exit(1));
 	if (isbuiltin(ctx->cmd->argv[0]))
 	{
 		status = execute_builtin_simple(core, ctx->cmd);
-	close_pipes(ctx->pipes, n_pipes);
 		return (free_core(core), exit(status));
 	}
 	path = find_in_path(ctx->cmd->argv[0], ctx->envp);
 	if (!path)
 	{
 		printf("minishell: %s: command not found\n", ctx->cmd->argv[0]);
-		close_pipes(ctx->pipes, n_pipes);
 		free_core(core);
 		exit(127);
 	}
 	execve(path, ctx->cmd->argv, ctx->envp);
 	perror("minishell");
-	close_pipes(ctx->pipes, n_pipes);
 	free_core(core);
 	exit(127);
 }
@@ -93,7 +90,7 @@ static int	wait_pipeline(pid_t last_pid, int n_cmds)
 	return (last_status);
 }
 
-static pid_t	fork_pipeline(t_core *core, t_pipe_ctx *ctx, int n_pipes)
+static pid_t	fork_pipeline(t_core *core, t_pipe_ctx *ctx)
 {
 	pid_t	pid;
 	pid_t	last_pid;
@@ -103,7 +100,7 @@ static pid_t	fork_pipeline(t_core *core, t_pipe_ctx *ctx, int n_pipes)
 	{
 		pid = fork();
 		if (pid == 0)
-			exec_pipe_cmd(core, ctx, n_pipes);
+			exec_pipe_cmd(core, ctx);
 		last_pid = pid;
 		ctx->cmd = ctx->cmd->next;
 		ctx->cmd_i++;
@@ -120,12 +117,16 @@ int	execute_pipeline(t_core *core, t_cmd *first, char **envp)
 	ctx.n_cmds = count_cmds(first);
 	n_pipes = ctx.n_cmds - 1;
 	ctx.pipes = create_pipes(n_pipes);
+	core->pipes = ctx.pipes;
+	core->n_pipes = n_pipes;
 	if (!ctx.pipes && ctx.n_cmds > 1)
 		return (1);
 	ctx.cmd = first;
 	ctx.envp = envp;
 	ctx.cmd_i = 0;
-	last_pid = fork_pipeline(core, &ctx, n_pipes);
+	last_pid = fork_pipeline(core, &ctx);
 	close_pipes(ctx.pipes, n_pipes);
+	core->pipes = NULL;
+	core->n_pipes = 0;
 	return (wait_pipeline(last_pid, ctx.n_cmds));
 }

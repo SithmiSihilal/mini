@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glugo-mu <glugo-mu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 23:00:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2025/11/05 23:00:00 by glugo-mu         ###   ########.fr       */
+/*   Updated: 2026/01/30 14:47:43 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	sigint_handler(int sig)
 {
 	(void)sig;
 	write(STDOUT_FILENO, "\n", 1);
+	g_last_signal = sig;
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();

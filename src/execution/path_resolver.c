@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:30:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:16:22 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:06:01 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static int	is_executable(const char *path)
 			close(fd);
 			return (0);
 		}
-		// TO DO controllo ./ e . e ./././././.
 		return (1);
 	}
 	return (0);

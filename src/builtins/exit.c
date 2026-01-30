@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:40:50 by siellage          #+#    #+#             */
-/*   Updated: 2026/01/11 14:31:59 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:15:40 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ int	isallnumeric(char *text)
 static void	cleanup_and_exit(t_core *core, t_cmdlist *cmdnode, int exit_code)
 {
 	free_core(core);
-	cmd_clear(&core->cmds);
-	free_env(core->my_env);
 	free_cmdlist_adapter(cmdnode);
 	close(core->saved_stdin);
 	close(core->saved_stdout);

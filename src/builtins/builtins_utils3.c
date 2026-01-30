@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 17:00:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:18:32 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:09:51 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,9 @@ void	free_core(t_core *core)
 	free_list_env(core->env_table);
 	freeenvcpy(core->my_env);
 	cmd_clear(&core->cmds);
+	if (core->pipes && core->n_pipes > 0)
+		close_pipes(core->pipes, core->n_pipes);
+	core->pipes = NULL;
+	core->n_pipes = 0;
 	free_cmdlist_adapter(core->cmd_table);
 }

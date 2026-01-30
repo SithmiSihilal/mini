@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 17:59:21 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:31:23 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:08:31 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,10 @@ typedef struct s_cmdlist
 
 typedef struct s_core
 {
+	int			exit_status;
+
+	int			**pipes;
+	int			n_pipes;
 	int			main_pid;
 	int			exec_output;
 	int			old_exec_output;
@@ -147,6 +151,8 @@ typedef struct s_core
 	int			saved_stdout;
 	int			saved_stdin;
 }	t_core;
+
+extern int	g_last_signal;
 
 void			close_pipes(int **pipes, int n_pipes);
 void			free_cmdlist_adapter(t_cmdlist *cmdlist);

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execcommand.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glugo-mu <glugo-mu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 16:26:21 by siellage          #+#    #+#             */
-/*   Updated: 2025/11/07 11:20:42 by glugo-mu         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:13:04 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell2.h"
+#include "minishell.h"
 
 void	execcommand(t_cmdlist *cmdnode, int *fd, int fdindex)
 {

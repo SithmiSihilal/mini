@@ -6,7 +6,7 @@
 /*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:00:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:32:30 by siellage         ###   ########.fr       */
+/*   Updated: 2026/01/30 15:20:37 by siellage         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ static void	exec_child(t_core *core, char *path, t_cmd *cmd, char **envp)
 	if (cmd->redirs && apply_redirections(cmd->redirs, envp,
 	core->exec_output) < 0)
 	{
+		free(path);
 		free_core(core);
 		exit(1);
 	}
 	setup_child_signals();
 	execve(path, cmd->argv, envp);
-	perror("minishell");
+	perror("minishell SISI");
 	free(path);
-	free_env(envp);
 	free_core(core);
 	exit(127);
 }
@@ -34,11 +34,25 @@ static void	exec_child(t_core *core, char *path, t_cmd *cmd, char **envp)
 static int	wait_child(pid_t pid)
 {
 	int	status;
-
+	int	signal;
+	
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (1);
+	else if (WIFSIGNALED(status))
+	{
+		signal = WTERMSIG(status);
+		status = 1;
+		if (signal == SIGQUIT)
+		{
+			write(STDERR_FILENO, "Quit (core dumped)\n", 19);
+			status = 131;
+		}
+		else if (signal == SIGINT)
+			status = 130;
+			
+	}
+	return (status);
 }
 
 int	execute_external(t_core *core, t_cmd *cmd, char **envp)
