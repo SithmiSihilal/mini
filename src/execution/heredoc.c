@@ -79,13 +79,6 @@ static void	heredoc_loop(int write_fd, const char *delim, char **e, int es)
 	}
 }
 
-void	handle_sigint(int sig)
-{
-	(void)sig;
-	write(STDERR_FILENO, "\n", 1);
-	close(STDIN_FILENO);	
-}
-
 int	handle_heredoc(const char *delimiter, char **envp, int exit_status)
 {
 	int		pipefd[2];

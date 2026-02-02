@@ -34,7 +34,6 @@ static char	*try_path(const char *dir, const char *cmd)
 	char	*full_path;
 	char	*temp;
 
-
 	temp = ft_strjoin(dir, "/");
 	if (!temp)
 		return (NULL);

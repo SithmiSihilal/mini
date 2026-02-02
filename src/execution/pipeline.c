@@ -26,24 +26,6 @@ static void	setup_pipe_fds(int i, int n_cmds, int **pipes)
 	close_all_pipes(pipes, n_cmds - 1);
 }
 
-void ft_free_matrix(int **mat)
-{
-	int i = 0;
-	while (mat[i])
-	{
-		i++;
-	}
-	int len = i;
-	i = 0;
-	while (i < len)
-	{
-		free(mat[i]);
-		i++;
-	}
-	free(mat);
-}
-
-
 static void	exec_pipe_cmd(t_core *core, t_pipe_ctx *ctx)
 {
 	char	*path;
