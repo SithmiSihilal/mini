@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: siellage <siellage@student.42.fr>          +#+  +:+       +#+         #
+#    By: glugo-mu <glugo-mu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/11 18:10:13 by glugo-mu          #+#    #+#              #
-#    Updated: 2026/01/30 14:36:03 by siellage         ###   ########.fr        #
+#    Updated: 2026/02/02 22:01:11 by glugo-mu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ SRC =	src/main.c src/env/copy_env.c src/utils/utils.c \
 		src/execution/pipe_utils.c \
 		src/execution/redirections.c src/execution/heredoc.c \
 		src/signals/signals.c \
-		src/parsing/split_input.c src/parsing/command_builder.c \
+		src/parsing/split_input.c src/parsing/split_utils.c \
+		src/parsing/command_builder.c \
 		src/parsing/command_utils.c src/parsing/token_list.c \
 		src/parsing/token_utils.c src/parsing/tokenizer.c src/parsing/expand.c \
 		src/parsing/expand_utils.c src/parsing/validate.c \
