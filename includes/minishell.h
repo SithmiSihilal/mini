@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: glugo-mu <glugo-mu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 17:59:21 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 16:00:17 by siellage         ###   ########.fr       */
+/*   Updated: 2026/02/02 22:25:42 by glugo-mu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,11 @@ char			**copy_env(char **envp);
 void			free_env(char **env);
 char			**init_env(void);
 void			init_global_env(t_core *core, char **envp);
+int				ft_isspace(char c);
+int				ft_isspecialchar(char c);
+int				get_quote_closing_idx(t_split_ctx *ctx, char *input,
+					int *start_idx);
+int				is_generic_word(char current, char next);
 char			**split_input(char *input);
 int				validate_input(const char *input);
 t_token			*tokenize(char **parts, char **error);
@@ -240,5 +245,6 @@ int				execute_builtin_simple(t_core *core, t_cmd *cmd);
 int				apply_redirections(t_redir *redirs, char **envp, int es);
 void			setup_signals(void);
 void			setup_child_signals(void);
+void			handle_sigint(int sig);
 
 #endif

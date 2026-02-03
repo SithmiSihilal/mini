@@ -17,7 +17,7 @@ static void	exec_child(t_core *core, char *path, t_cmd *cmd, char **envp)
 {
 	signal(SIGINT, SIG_IGN);
 	if (cmd->redirs && apply_redirections(cmd->redirs, envp,
-	core->exec_output) < 0)
+			core->exec_output) < 0)
 	{
 		free(path);
 		free_core(core);
@@ -35,7 +35,7 @@ static int	wait_child(pid_t pid)
 {
 	int	status;
 	int	signal;
-	
+
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
@@ -50,7 +50,6 @@ static int	wait_child(pid_t pid)
 		}
 		else if (signal == SIGINT)
 			status = 130;
-			
 	}
 	return (status);
 }

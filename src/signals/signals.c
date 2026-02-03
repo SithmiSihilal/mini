@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: siellage <siellage@student.42.fr>          +#+  +:+       +#+        */
+/*   By: glugo-mu <glugo-mu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 23:00:00 by glugo-mu          #+#    #+#             */
-/*   Updated: 2026/01/30 14:47:43 by siellage         ###   ########.fr       */
+/*   Updated: 2026/02/02 22:10:36 by glugo-mu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,11 @@ void	setup_child_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+}
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(STDERR_FILENO, "\n", 1);
+	close(STDIN_FILENO);
 }

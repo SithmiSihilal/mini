@@ -61,7 +61,6 @@ static void	handle_tokens(t_core *core, t_token *tok, char **res)
 	core->cmds = cmds;
 	token_clear(&tok);
 	(void)res;
-	// free_resources(res[0], (char **)res[1], res[2]);
 	if (cmds)
 	{
 		core->exit_status = execute_cmd(core, cmds, core->my_env);

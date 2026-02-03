@@ -34,8 +34,9 @@ static char	*join_char_free(char *s, char c)
 static char	*expand_var_in_line(char *line, char **envp, int exit_status)
 {
 	char	*result;
-	char	*tmp;
+	char	*vn;
 	size_t	i;
+	size_t	vl;
 
 	result = ft_strdup("");
 	i = 0;
@@ -43,18 +44,17 @@ static char	*expand_var_in_line(char *line, char **envp, int exit_status)
 	{
 		if (line[i] == '$' && line[i + 1])
 		{
-			tmp = get_var_value(line + i + 1, envp, exit_status);
-			if (tmp)
-			{
-				result = join_str_free(result, tmp);
-				while (line[i + 1] && (ft_isalnum(line[i + 1])
-						|| line[i + 1] == '_' || line[i + 1] == '?'))
-					i++;
-			}
+			vn = extract_var_name(line + i, &vl);
+			if (vn && vn[0])
+				result = join_str_free(result,
+						get_var_value(vn, envp, exit_status));
+			else
+				result = join_char_free(result, '$');
+			free(vn);
+			i += vl;
 		}
 		else
-			result = join_char_free(result, line[i]);
-		i++;
+			result = join_char_free(result, line[i++]);
 	}
 	free(line);
 	return (result);
@@ -77,13 +77,6 @@ static void	heredoc_loop(int write_fd, const char *delim, char **e, int es)
 		write(write_fd, "\n", 1);
 		free(line);
 	}
-}
-
-void	handle_sigint(int sig)
-{
-	(void)sig;
-	write(STDERR_FILENO, "\n", 1);
-	close(STDIN_FILENO);	
 }
 
 int	handle_heredoc(const char *delimiter, char **envp, int exit_status)
